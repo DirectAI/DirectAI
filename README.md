@@ -14,3 +14,6 @@
     - `-r` or `"--results_dir` specifies the "Directory for Results". It defaults to "results". We write `classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `"--config_file_path` specifies the "File Path for Classifier Configuration". It defaults to "configs/classifier.json".
     - `-c` or `"--classes` specifies the "List of Classes to Predict". If this is defined, it will replace the `config_file_path` argument. We expect a string that can be evaluated as a Python List of Strings (e.g. `"['sofa', 'chair']"`).
+
+### Running Detection
+- **Quickstart**: From the root directory, execute `python scripts/detection_on_collection`.
