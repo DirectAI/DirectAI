@@ -1,5 +1,5 @@
 # DirectAI
-Interfacing with DirectAI's Computer Vision Tooling
+## computer vision without training data
 
 ### Startup Instructions
 - Make sure to add your credentials after running `cp .env.template .env`.
