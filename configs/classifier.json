@@ -1,0 +1,14 @@
+{
+    "classifier_configs": [
+        {
+            "name": "dog",
+            "examples_to_include": ["dog"],
+            "examples_to_exclude": []
+        },
+        {
+            "name": "cat",
+            "examples_to_include": ["cat"],
+            "examples_to_exclude": []
+        }
+    ]
+}
