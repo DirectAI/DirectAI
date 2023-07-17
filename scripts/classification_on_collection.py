@@ -34,7 +34,6 @@ def main(data_dir, results_dir, config_file_path, classes):
                 'examples_to_exclude': []
             })
         body = {'classifier_configs': classifier_configs}
-        print(body)
     else:
         with open(config_file_path) as f:
             body = json.loads(f.read())
