@@ -8,7 +8,7 @@
 ### Running Classification
 - **Quickstart**: From the root directory, execute `python scripts/classification_on_collection`.
 - Add image data that you're interested in running a classification model on to the `data` folder. 
-- You can specify classes of interest via the command line (e.g. `"['sofa', 'chair']"`) or with a filepath that points to a json (e.g. `configs/classifier.json`). 
+- You can specify classes of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/classifier.json`). 
 - Arguments:
     - `-d` or `"--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [this dataset](https://universe.roboflow.com/roboflow-100/furniture-ngpea) to the folder already! 
     - `-r` or `"--results_dir` specifies the "Directory for Results". It defaults to "results". We write `classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
