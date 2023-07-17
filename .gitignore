@@ -2,4 +2,4 @@
 .DS_Store
 results/*
 !results/.gitkeep
-scripts/__pycache__/**
+scripts/__pycache__/*
