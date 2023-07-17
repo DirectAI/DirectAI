@@ -1,0 +1,11 @@
+{
+    "detector_configs": [
+        {
+            "name": "pet",
+            "examples_to_include": ["duck", "dog", "cat"],
+            "examples_to_exclude": ["fish", "food"],
+            "detection_threshold": 0.1
+        }
+    ],
+    "nms_threshold": 0.4
+}
