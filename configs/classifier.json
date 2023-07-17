@@ -1,0 +1,14 @@
+{
+    "classifier_configs": [
+        {
+            "name": "animals with friends",
+            "examples_to_include": ["multiple animals", "two or more animals"],
+            "examples_to_exclude": ["animal with food"]
+        },
+        {
+            "name": "single animal",
+            "examples_to_include": ["single animal", "one animal"],
+            "examples_to_exclude": []
+        }
+    ]
+}
