@@ -2,8 +2,9 @@
 ## computer vision without training data
 
 ### Startup Instructions
+- This was tested with `Python` 3.11.2 & `pip` 23.0.1. 
 - Make sure to add your credentials after running `cp .env.template .env`.
-- Install requirements via `pip install -r requirements.txt`
+- Install requirements via `pip install -r requirements.txt`. We specify package versions and can't guarantee performance with different versions.
 
 ### Running Classification
 - **Quickstart**: From the root directory, execute `python scripts/classification_on_collection`.
