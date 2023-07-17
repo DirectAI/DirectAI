@@ -99,6 +99,8 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
         results[filename] = dets[0]
     
     # Save Inference Results
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
     with open(f"{results_dir}/detection_results.json", 'w') as f:
         json.dump(results, f)
     

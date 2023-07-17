@@ -64,6 +64,8 @@ def main(data_dir, results_dir, config_file_path, class_name):
     results = {}
     
     # Prepares Results Directory
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
     for config in body['classifier_configs']:
         label = config['name']
         class_dir = f"{results_dir}/{label}"

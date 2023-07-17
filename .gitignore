@@ -1,5 +1,5 @@
 .env
 .DS_Store
-!results/.gitkeep
 results/*
-scripts/__pycache__/**
+!results/.gitkeep
+scripts/__pycache__/*
