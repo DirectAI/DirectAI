@@ -9,17 +9,16 @@ sys.path.append(parent_directory)
 def get_directai_access_token(
     client_id,
     client_secret,
-    auth_endpoint = "https://oauth.directai.io/token"
+    auth_endpoint = "https://api.alpha.directai.io/token"
 ):
-    body = {
+    params = {
         "client_id": client_id,
         "client_secret": client_secret
     }
-    response = requests.post(auth_endpoint,json=body)
-    response_json = response.json()
-    if response_json['statusCode'] != 200:
+    response = requests.post(auth_endpoint,params=params)
+    if response.status_code != 200:
         raise ValueError("Invalid DirectAI Credentials")
-    return response.json()["body"]["access_token"]
+    return response.json()["access_token"]
 
 def get_file_data(fp):
     # Open the file in binary mode
