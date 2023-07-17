@@ -15,7 +15,7 @@
     - `-r` or `"--results_dir` specifies the "Directory for Results". It defaults to "results". We write `classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `"--config_file_path` specifies the "File Path for Classifier Configuration". It defaults to "configs/classifier.json".
     - `-c` or `"--classes` specifies the "List of Classes to Predict". If this is defined, it will replace the `config_file_path` argument. We expect each class to be of the form `-c {CLASS_NAME}`. 
-        - Repeat as necessary (e.g. `python scripts/classification_on_collection -c dog -c parrot -c cat -c bear`)
+        - Repeat as necessary (e.g. `python scripts/classification_on_collection.py -c dog -c parrot -c cat -c bear`)
 
 ### Running Detection
 - **Quickstart**: From the root directory, execute `python scripts/detection_on_collection -b`.
@@ -26,5 +26,5 @@
     - `-r` or `"--results_dir` specifies the "Directory for Results". It defaults to "results". We write `detection_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `"--config_file_path` specifies the "File Path for Classifier Configuration". It defaults to "configs/classifier.json".
     - `-c` or `"--classes` specifies the "List of Classes to Predict". If this is defined, it will replace the `config_file_path` argument. We expect each class to be of the form `-c {CLASS_NAME}`. 
-        - Repeat as necessary (e.g. `python scripts/classification_on_collection -c dog -c parrot -c cat -c bear`)
+        - Repeat as necessary (e.g. `python scripts/detection_on_collection.py -c dog -c parrot -c cat -c bear`)
     - `-b` or `"--bounding_box_drawing` is a "Flag to draw bounding boxes on images". If used, it will save annotated images to the `results_dir` folder. 
