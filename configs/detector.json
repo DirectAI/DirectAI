@@ -1,16 +1,10 @@
 {
     "detector_configs": [
         {
-            "name": "sofa",
-            "examples_to_include": ["sofa"],
-            "examples_to_exclude": [],
+            "name": "pet",
+            "examples_to_include": ["duck", "dog", "cat"],
+            "examples_to_exclude": ["fish", "food"],
             "detection_threshold": 0.1
-        },
-        {
-            "name": "chair",
-            "examples_to_include": ["chair", "dining chair"],
-            "examples_to_exclude": [],
-            "detection_threshold": 0.05
         }
     ],
     "nms_threshold": 0.4

@@ -1,9 +1,9 @@
 import os
 import sys
-import argparse
 import json
 import requests
 import cv2
+import click
 
 from dotenv import load_dotenv
 from tqdm import tqdm
@@ -16,49 +16,47 @@ from utils import (
     display_bounding_boxes
 )
 
-
 load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
+DIRECTAI_BASE_URL = "http://ec2-52-23-169-246.compute-1.amazonaws.com:8000"
 DEFAULT_OBJECT_DETECTION_THRESHOLD = 0.1
 DEFAULT_NMS_THRESHOLD = 0.4
 
-def main():
-    # Initialize the parser
-    parser = argparse.ArgumentParser(description="Detection on Data Collection.")
-    parser.add_argument("-d", "--data_dir", help="Directory for Input Data", default="data")
-    parser.add_argument("-r", "--results_dir", help="Directory for Results", default="results")
-    parser.add_argument("-f", "--config_file_path", help="File Path for Detection Configuration", default="configs/detector.json" )
-    parser.add_argument("-c", "--classes", help="List of Classes to Detect", default="")
-    parser.add_argument('-b', '--bounding_box_drawing', action='store_true', default=False, help='Flag to draw bounding boxes on images')
-    
-    # Parse the arguments
-    args = parser.parse_args()
-    if args.classes != "":
-        classes_list = eval(args.classes)
-        detector_configs = [{
-            'name': class_name,
-            'examples_to_include': [class_name],
-            'examples_to_exclude': [],
-            'detection_threshold': DEFAULT_OBJECT_DETECTION_THRESHOLD
-        } for class_name in classes_list]
+
+@click.command()
+@click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
+@click.option('-r', '--results-dir', default='results', help='Directory for Results')
+@click.option('-f', '--config-file-path', default='configs/detector.json', help='File Path for Classifier Configuration')
+@click.option('-b', '--bounding-box-drawing', is_flag=True, default=False, help='Flag to draw bounding boxes on images')
+@click.option('-c', '--classes', help='List of Classes to Predict', multiple=True)
+def main(data_dir, results_dir, config_file_path, bounding_box_drawing, classes):
+    if len(classes) > 0:
+        detector_configs = []
+        for class_name in classes:
+            detector_configs.append({
+                'name': class_name,
+                'examples_to_include': [class_name],
+                'examples_to_exclude': [],
+                'detection_threshold': DEFAULT_OBJECT_DETECTION_THRESHOLD
+            })
         body = {
             'detector_configs': detector_configs,
             'nms_threshold': DEFAULT_NMS_THRESHOLD
         }
     else:
-        with open(args.config_file_path) as f:
+        with open(config_file_path) as f:
             body = json.loads(f.read())
     
     # Get Access Token
     access_token = get_directai_access_token(
         client_id=DIRECTAI_CLIENT_ID,
-        client_secret=DIRECTAI_CLIENT_SECRET
+        client_secret=DIRECTAI_CLIENT_SECRET,
+        auth_endpoint=DIRECTAI_BASE_URL+"/token"
     )
     
     headers = {
-        'Authorization': access_token
+        'Authorization': f"Bearer {access_token}"
     }
     
     # Deploy Detector
@@ -69,38 +67,39 @@ def main():
     )
     if deploy_response.status_code != 200:
         raise ValueError(deploy_response.json())
-    deployed_detector_id = deploy_response.json()
+    deployed_detector_id = deploy_response.json()['deployed_id']
 
     
     # Compiled Results
     results = {}
     
     # Run Classification on Data Collection
-    for filename in tqdm(os.listdir(args.data_dir)):
+    for filename in tqdm(os.listdir(data_dir)):
         if filename == '.DS_Store':
             continue
         params = {
             'deployed_id': deployed_detector_id
         }
-        file_data = get_file_data(f"{args.data_dir}/{filename}")
-        response = requests.post(
+        file_data = get_file_data(f"{data_dir}/{filename}")
+        detect_response = requests.post(
             f"{DIRECTAI_BASE_URL}/detect",
             headers=headers, 
             params=params,
             files=file_data
         )
-        dets = response.json()
+        if detect_response.status_code != 200:
+            raise ValueError(detect_response.json())
+        dets = detect_response.json()
         
-        
-        cv2_img = cv2.imread(f"{args.data_dir}/{filename}")
+        cv2_img = cv2.imread(f"{data_dir}/{filename}")
         drawn_image = display_bounding_boxes(cv2_img, dets[0])
         
-        if args.bounding_box_drawing:
-            cv2.imwrite(f'results/annotated_{filename}'.format(), drawn_image)
+        if bounding_box_drawing:
+            cv2.imwrite(f'{results_dir}/annotated_{filename}'.format(), drawn_image)
         results[filename] = dets[0]
     
     # Save Inference Results
-    with open(f"{args.results_dir}/detection_results.json", 'w') as f:
+    with open(f"{results_dir}/detection_results.json", 'w') as f:
         json.dump(results, f)
     
 if __name__ == '__main__':
