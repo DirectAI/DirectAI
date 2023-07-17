@@ -16,7 +16,7 @@ from utils import get_directai_access_token, get_file_data
 load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "http://ec2-52-23-169-246.compute-1.amazonaws.com:8000"
+DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
 
 @click.command()
