@@ -23,14 +23,14 @@ DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 @click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
 @click.option('-f', '--config-file-path', default='configs/classifier.json', help='File Path for Classifier Configuration')
-@click.option('-c', '--classes', help='List of Classes to Predict', multiple=True)
-def main(data_dir, results_dir, config_file_path, classes):
-    if len(classes) > 0:
+@click.option('-c', '--class-name', help='Class to Predict', multiple=True)
+def main(data_dir, results_dir, config_file_path, class_name):
+    if len(class_name) > 0:
         classifier_configs = []
-        for class_name in classes:
+        for single_class in class_name:
             classifier_configs.append({
-                'name': class_name,
-                'examples_to_include': [class_name],
+                'name': single_class,
+                'examples_to_include': [single_class],
                 'examples_to_exclude': []
             })
         body = {'classifier_configs': classifier_configs}

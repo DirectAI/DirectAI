@@ -29,14 +29,14 @@ DEFAULT_NMS_THRESHOLD = 0.4
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
 @click.option('-f', '--config-file-path', default='configs/detector.json', help='File Path for Classifier Configuration')
 @click.option('-b', '--bounding-box-drawing', is_flag=True, default=False, help='Flag to draw bounding boxes on images')
-@click.option('-c', '--classes', help='List of Classes to Predict', multiple=True)
-def main(data_dir, results_dir, config_file_path, bounding_box_drawing, classes):
-    if len(classes) > 0:
+@click.option('-c', '--class-name', help='Class to Predict', multiple=True)
+def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_name):
+    if len(class_name) > 0:
         detector_configs = []
-        for class_name in classes:
+        for single_class in class_name:
             detector_configs.append({
-                'name': class_name,
-                'examples_to_include': [class_name],
+                'name': single_class,
+                'examples_to_include': [single_class],
                 'examples_to_exclude': [],
                 'detection_threshold': DEFAULT_OBJECT_DETECTION_THRESHOLD
             })
