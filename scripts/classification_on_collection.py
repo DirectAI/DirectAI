@@ -18,6 +18,7 @@ DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
+
 @click.command()
 @click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
