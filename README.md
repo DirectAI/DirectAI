@@ -7,7 +7,7 @@
 - Install requirements via `pip install -r requirements.txt`. We specify package versions and can't guarantee performance with different versions.
 
 ### Running Classification
-- **Quickstart**: From the root directory, execute `python scripts/classification_on_collection`.
+- **Quickstart**: From the root directory, execute `python scripts/classification_on_collection.py`.
 - Add image data that you're interested in running a classification model on to the `data` folder. 
 - You can specify classes of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/classifier.json`). 
 - Arguments:
@@ -18,7 +18,7 @@
         - Repeat as necessary (e.g. `python scripts/classification_on_collection.py -c dog -c parrot -c cat -c bear`)
 
 ### Running Detection
-- **Quickstart**: From the root directory, execute `python scripts/detection_on_collection -b`.
+- **Quickstart**: From the root directory, execute `python scripts/detection_on_collection.py -b`.
 - Add image data that you're interested in running a detection model on to the `data` folder. 
 - You can specify bojects of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/detector.json`). 
 - Arguments:
