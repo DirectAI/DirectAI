@@ -72,6 +72,9 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
     
     # Compiled Results
     results = {}
+
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
     
     # Run Classification on Data Collection
     for filename in tqdm(os.listdir(data_dir)):
@@ -91,16 +94,14 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
             raise ValueError(detect_response.json())
         dets = detect_response.json()
         
-        cv2_img = cv2.imread(f"{data_dir}/{filename}")
-        drawn_image = display_bounding_boxes(cv2_img, dets[0])
-        
         if bounding_box_drawing:
+            cv2_img = cv2.imread(f"{data_dir}/{filename}")
+            drawn_image = display_bounding_boxes(cv2_img, dets[0])
             cv2.imwrite(f'{results_dir}/annotated_{filename}'.format(), drawn_image)
+
         results[filename] = dets[0]
     
     # Save Inference Results
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
     with open(f"{results_dir}/detection_results.json", 'w') as f:
         json.dump(results, f)
     
