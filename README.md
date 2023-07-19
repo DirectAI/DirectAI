@@ -20,7 +20,7 @@
 ### Running Detection
 - **Quickstart**: From the root directory, execute `python scripts/detection_on_collection.py -b`.
 - Add image data that you're interested in running a detection model on to the `data` folder. 
-- You can specify bojects of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/detector.json`). 
+- You can specify objects of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/detector.json`). 
 - Arguments:
     - `-d` or `--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [this dataset](https://universe.roboflow.com/roboflow-100/furniture-ngpea) to the folder already! 
     - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `detection_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
