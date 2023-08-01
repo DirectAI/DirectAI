@@ -1,4 +1,4 @@
-# [DirectAI](https://calendly.com/directai/demo)
+# DirectAI
 ## computer vision without training data
 
 ### Startup Instructions
@@ -33,5 +33,6 @@
 DirectAI's models work well for objects and categories that can be *succintly described in natural language*. If you notice a failure mode that isn't resolved by adding descriptions to `examples_to_include` and/or `examples_to_exclude`, please create an Issue or reach out directly! 
 
 ### Contact Us
-Email: `ben@directai.io`
-Synchronous Meeting: [Calendly](https://calendly.com/directai/demo)
+- Email: `ben@directai.io`
+- Synchronous Meeting: [Calendly](https://calendly.com/directai/demo)
+- Check out our [website](https://directai.io)!
