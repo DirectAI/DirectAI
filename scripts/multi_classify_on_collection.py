@@ -74,7 +74,7 @@ def main(data_dir, results_dir, config_file_paths):
             )
     
     # Save Inference Results
-    with open(f"{results_dir}/classification_results.json", 'w') as f:
+    with open(f"{results_dir}/multi_classification_results.json", 'w') as f:
         json.dump(results, f)
     
 if __name__ == '__main__':
