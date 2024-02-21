@@ -34,13 +34,14 @@ def main(data_dir, results_dir, config_file_paths):
     
     deployed_classifier_ids = []
     if len(config_file_paths) > 0:
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
         for config_file_path in config_file_paths:
-            deployed_classifier_id = deploy_classifier(config_file_path, access_token, results_dir)
+            stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
+            deployed_classifier_id = deploy_classifier(config_file_path, access_token, f"{results_dir}/{stripped_config_name}")
             deployed_classifier_ids.append(deployed_classifier_id)
     else:
         print("Please provide config file paths. Exiting.")
-    
-    
     
     headers = {
         'Authorization': f"Bearer {access_token}"
