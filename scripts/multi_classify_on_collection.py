@@ -42,6 +42,7 @@ def main(data_dir, results_dir, config_file_paths):
             deployed_classifier_ids.append(deployed_classifier_id)
     else:
         print("Please provide config file paths. Exiting.")
+        return
     
     headers = {
         'Authorization': f"Bearer {access_token}"
@@ -67,11 +68,12 @@ def main(data_dir, results_dir, config_file_paths):
         if classify_response.status_code != 200:
             raise ValueError(classify_response.json())
         results[filename] = classify_response.json()
-        for deployed_classifier_id in results[filename]:
+        for config_file_path, deployed_classifier_id in zip(config_file_paths, deployed_classifier_ids):
             prediction = results[filename][deployed_classifier_id]['pred']
+            stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
             shutil.copy(
                 f"{data_dir}/{filename}",
-                f"{results_dir}/{prediction}/{filename}"
+                f"{results_dir}/{stripped_config_name}/{prediction}/{filename}"
             )
     
     # Save Inference Results
