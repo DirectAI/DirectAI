@@ -11,7 +11,7 @@ from tqdm import tqdm
 parent_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_directory)
 from utils import get_directai_access_token, get_file_data
-from classification_on_collection import deploy_classifier
+from classification_on_collection import get_classifier_body, deploy_classifier, prep_classification_results_dir
 
 
 load_dotenv()
@@ -33,13 +33,20 @@ def main(data_dir, results_dir, config_file_paths):
     )
     
     deployed_classifier_ids = []
+    classifier_results_dirs = []
     if len(config_file_paths) > 0:
         if not os.path.exists(results_dir):
             os.makedirs(results_dir)
         for config_file_path in config_file_paths:
-            stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
-            deployed_classifier_id = deploy_classifier(config_file_path, access_token, f"{results_dir}/{stripped_config_name}")
+            # Model Deployment Prep
+            classifier_body = get_classifier_body(config_file_path)
+            deployed_classifier_id = deploy_classifier(classifier_body, access_token)
             deployed_classifier_ids.append(deployed_classifier_id)
+            # Results Directory Prep
+            stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
+            classifier_results_dir = f"{results_dir}/{stripped_config_name}"
+            classifier_results_dirs.append(classifier_results_dir)
+            prep_classification_results_dir(classifier_body, classifier_results_dir)
     else:
         print("Please provide config file paths. Exiting.")
         return
@@ -68,12 +75,12 @@ def main(data_dir, results_dir, config_file_paths):
         if classify_response.status_code != 200:
             raise ValueError(classify_response.json())
         results[filename] = classify_response.json()
-        for config_file_path, deployed_classifier_id in zip(config_file_paths, deployed_classifier_ids):
+        for classifier_results_dir, deployed_classifier_id in zip(classifier_results_dirs, deployed_classifier_ids):
             prediction = results[filename][deployed_classifier_id]['pred']
             stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
             shutil.copy(
                 f"{data_dir}/{filename}",
-                f"{results_dir}/{stripped_config_name}/{prediction}/{filename}"
+                f"{classifier_results_dir}/{prediction}/{filename}"
             )
     
     # Save Inference Results

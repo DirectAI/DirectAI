@@ -18,7 +18,7 @@ DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
-def deploy_classifier(config_file_path, access_token, results_dir, class_name=None):
+def get_classifier_body(config_file_path, class_name=None):
     if (class_name is not None) and len(class_name) > 0:
         classifier_configs = []
         for single_class in class_name:
@@ -31,7 +31,10 @@ def deploy_classifier(config_file_path, access_token, results_dir, class_name=No
     else:
         with open(config_file_path) as f:
             body = json.loads(f.read())
+    
+    return body
 
+def deploy_classifier(body, access_token):
     headers = {
         'Authorization': f"Bearer {access_token}"
     }
@@ -46,11 +49,9 @@ def deploy_classifier(config_file_path, access_token, results_dir, class_name=No
         raise ValueError(deploy_response.json()['message'])
     deployed_classifier_id = deploy_response.json()['deployed_id']
     
-    prep_classification_results_dir(results_dir, body)
-    
     return deployed_classifier_id
 
-def prep_classification_results_dir(results_dir, body):
+def prep_classification_results_dir(body, results_dir):
     # Prepares Results Directory
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
@@ -74,7 +75,9 @@ def main(data_dir, results_dir, config_file_path, class_name):
         auth_endpoint=DIRECTAI_BASE_URL+"/token"
     )
     
-    deployed_classifier_id = deploy_classifier(config_file_path, access_token, results_dir, class_name)
+    classifier_body = get_classifier_body(config_file_path, class_name)
+    deployed_classifier_id = deploy_classifier(classifier_body, access_token)
+    prep_classification_results_dir(classifier_body, results_dir)
     # Compiled Results
     results = {}
     
