@@ -18,14 +18,8 @@ DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
-
-@click.command()
-@click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
-@click.option('-r', '--results-dir', default='results', help='Directory for Results')
-@click.option('-f', '--config-file-path', default='configs/classifier.json', help='File Path for Classifier Configuration')
-@click.option('-c', '--class-name', help='Class to Predict', multiple=True)
-def main(data_dir, results_dir, config_file_path, class_name):
-    if len(class_name) > 0:
+def deploy_classifier(config_file_path, access_token, results_dir, class_name=None):
+    if (class_name is not None) and len(class_name) > 0:
         classifier_configs = []
         for single_class in class_name:
             classifier_configs.append({
@@ -37,14 +31,7 @@ def main(data_dir, results_dir, config_file_path, class_name):
     else:
         with open(config_file_path) as f:
             body = json.loads(f.read())
-    
-    # Get Access Token
-    access_token = get_directai_access_token(
-        client_id=DIRECTAI_CLIENT_ID,
-        client_secret=DIRECTAI_CLIENT_SECRET,
-        auth_endpoint=DIRECTAI_BASE_URL+"/token"
-    )
-    
+
     headers = {
         'Authorization': f"Bearer {access_token}"
     }
@@ -58,11 +45,12 @@ def main(data_dir, results_dir, config_file_path, class_name):
     if deploy_response.status_code != 200:
         raise ValueError(deploy_response.json()['message'])
     deployed_classifier_id = deploy_response.json()['deployed_id']
+    
+    prep_classification_results_dir(results_dir, body)
+    
+    return deployed_classifier_id
 
-    
-    # Compiled Results
-    results = {}
-    
+def prep_classification_results_dir(results_dir, body):
     # Prepares Results Directory
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
@@ -72,6 +60,27 @@ def main(data_dir, results_dir, config_file_path, class_name):
         if os.path.exists(class_dir):
             shutil.rmtree(class_dir) 
         os.makedirs(class_dir)
+
+@click.command()
+@click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
+@click.option('-r', '--results-dir', default='results', help='Directory for Results')
+@click.option('-f', '--config-file-path', default='configs/classifier.json', help='File Path for Classifier Configuration')
+@click.option('-c', '--class-name', help='Class to Predict', multiple=True)
+def main(data_dir, results_dir, config_file_path, class_name):
+    # Get Access Token
+    access_token = get_directai_access_token(
+        client_id=DIRECTAI_CLIENT_ID,
+        client_secret=DIRECTAI_CLIENT_SECRET,
+        auth_endpoint=DIRECTAI_BASE_URL+"/token"
+    )
+    
+    deployed_classifier_id = deploy_classifier(config_file_path, access_token, results_dir, class_name)
+    # Compiled Results
+    results = {}
+    
+    headers = {
+        'Authorization': f"Bearer {access_token}"
+    }
     
     # Run Classification on Data Collection
     for filename in tqdm(os.listdir(data_dir)):
