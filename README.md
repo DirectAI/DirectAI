@@ -23,9 +23,9 @@
 - You can specify multiple classifiers of interest with several filepaths that point to a json (e.g. `configs/classifier.json` & `configs/alt_classifier.json`). 
 - Arguments:
     - `-d` or `--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [this dataset](https://universe.roboflow.com/roboflow-100/furniture-ngpea) to the folder already! 
-    - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
+    - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `multi_classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `--config_file_paths` specifies the "File Path(s) for Classifier Configuration". It defaults to [`configs/classifier.json`, `configs/alt_classifier.json`].
-        - Repeat as necessary (e.g. `python scripts/classification_on_collection.py -f configs/classifier.json -f configs/alt_classifier.json -f configs/my_third_classifier.json`)
+        - Repeat as necessary (e.g. `python scripts/multi_classify_on_collection.py -f configs/classifier.json -f configs/alt_classifier.json -f configs/my_third_classifier.json`)
 
 ### Running Detection
 - **Quickstart**: From the root directory, execute `python scripts/detection_on_collection.py -b`.
