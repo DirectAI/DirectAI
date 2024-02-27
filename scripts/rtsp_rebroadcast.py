@@ -32,7 +32,7 @@ load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
-DIRECTAI_STREAM_URL = "https://watch.directai.io"
+DIRECTAI_STREAM_URL = "rtsp://watch.directai.io"
 
 def get_directai_access_token(
     client_id,
