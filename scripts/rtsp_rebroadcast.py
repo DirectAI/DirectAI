@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -34,6 +35,8 @@ DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 DIRECTAI_STREAM_URL = "rtsp://watch.directai.io"
 
+HLS_OUTPUT_DIR = None ## TO MODIFY ##
+
 def get_directai_access_token(
     client_id,
     client_secret,
@@ -60,7 +63,7 @@ def start_rtsp_inference(access_token):
     )
     response_json = response.json()
     tracker_instance_id = response_json["tracker_instance_id"]
-    print(f"View stream here: rtsp://{DIRECTAI_STREAM_URL}/{tracker_instance_id}")
+    print(f"View stream here: {DIRECTAI_STREAM_URL}/{tracker_instance_id}")
     return tracker_instance_id
 
 def stop_rtsp_inference(access_token, tracker_instance_id):
@@ -72,11 +75,45 @@ def stop_rtsp_inference(access_token, tracker_instance_id):
         headers=headers
     )
     return response.json()
-   
+
+
+def record_annotated_stream_via_hls(rtsp_url, hls_output_dir):
+    if hls_output_dir is None:
+        raise ValueError("HLS Output Directory not set.")
+    
+    # make the directory if it doesn't exist
+    if not os.path.exists(hls_output_dir):
+        os.makedirs(hls_output_dir)
+    # empty it if it does
+    else:
+        for file in os.listdir(hls_output_dir):
+            file_path = os.path.join(hls_output_dir, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(e)
+    
+    # switch to running the ffmpeg command to transmux the broadcasted stream to HLS
+    os.system(f"ffmpeg -rtsp_transport tcp -i {rtsp_url} -f hls -hls_time 5 -hls_list_size 0 -hls_segment_filename '{hls_output_dir}/segment_%05d.ts' {hls_output_dir}/playlist.m3u8")
+
 
 if __name__ == '__main__':
     access_token = get_directai_access_token(DIRECTAI_CLIENT_ID, DIRECTAI_CLIENT_SECRET)
     tracker_instance_id = start_rtsp_inference(access_token)
+    
+    if HLS_OUTPUT_DIR is not None:
+        # wait for the stream to start
+        print("Waiting 10 seconds for stream to start so we can record it...")
+        time.sleep(10)
+        try:
+            print("Recording stream...")
+            record_annotated_stream_via_hls(f"{DIRECTAI_STREAM_URL}/{tracker_instance_id}", HLS_OUTPUT_DIR)
+        except Exception as e:
+            print(f"Error recording stream: {e}")
+    else:
+        print("HLS_OUTPUT_DIR not set. Not recording stream.")
+        
     try:
         print("Press CTRL-C to stop stream.")
         while True:
