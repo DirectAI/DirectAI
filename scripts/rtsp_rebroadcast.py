@@ -5,7 +5,11 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
+from utils import get_directai_access_token
+
 ## TO MODIFY ##
+# NOTE: for the object tracker, as opposed to the object detector, objects are not mutually exclusive
+# which means if we want the same object to not be detected twice, we need to set up the exclusions
 DETECTOR_CONFIGS = [
     {
         "name": "cell phone",
@@ -15,13 +19,13 @@ DETECTOR_CONFIGS = [
     {
         "name": "wallet",
         "incs": ["wallet"],
-        "excs": [],
+        "excs": ["cell phone"],
         
     }
 ]
 
 TRACKER_CONFIG = {
-    "stream_url": "rtsp://your_raw_stream_here", ## TO MODIFY ##
+    "stream_url": "YOUR_RTSP_URL", ## TO MODIFY ##
     "webhook_url": "WEBHOOK_TO_SEND_DETECTION_RESULTS", ## TO MODIFY ##
     "tracker_config": {
         "rebroadcast_annotations": "True",
@@ -29,27 +33,12 @@ TRACKER_CONFIG = {
     }
 }
 
-load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
 DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 DIRECTAI_STREAM_URL = "rtsp://watch.directai.io"
 
 HLS_OUTPUT_DIR = None ## TO MODIFY ##
-
-def get_directai_access_token(
-    client_id,
-    client_secret,
-    auth_endpoint = "https://api.alpha.directai.io/token"
-):
-    params = {
-        "client_id": client_id,
-        "client_secret": client_secret
-    }
-    response = requests.post(auth_endpoint,params=params)
-    if response.status_code != 200:
-        raise ValueError("Invalid DirectAI Credentials")
-    return response.json()["access_token"]
 
 
 def start_rtsp_inference(access_token):
