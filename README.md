@@ -3,7 +3,7 @@
 
 ### Startup Instructions
 - This was tested with `Python` 3.11.2.
-- Make sure to add your credentials after running `cp .env.template .env`. See [API docs](https://api.alpha.directai.io/docs) for instructions on credential generation.
+- Make sure to add your credentials after running `cp .env.template .env`. See [API docs](https://api.alpha.directai.io/docs) for instructions on credential generation. This is *not necessary* if you're making calls to a self-hosted container.
 - Install requirements via `pip install -r requirements.txt`. We specify package versions and can't guarantee performance with different versions.
 
 ### Running Classification

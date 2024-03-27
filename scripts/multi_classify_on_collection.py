@@ -40,7 +40,7 @@ def main(host, data_dir, results_dir, config_file_paths):
         for config_file_path in config_file_paths:
             # Model Deployment Prep
             classifier_body = get_classifier_body(config_file_path)
-            deployed_classifier_id = deploy_classifier(classifier_body, access_token)
+            deployed_classifier_id = deploy_classifier(host, classifier_body, access_token)
             deployed_classifier_ids.append(deployed_classifier_id)
             # Results Directory Prep
             stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
