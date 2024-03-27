@@ -11,6 +11,7 @@
 - Add image data that you're interested in running a classification model on to the `data` folder. 
 - You can specify classes of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/classifier.json`). 
 - Arguments:
+    - `-h` or `--host` specifies "DirectAI Host". It defaults to "https://api.alpha.directai.io". This may be useful if you're self-hosting a DirectAI container.
     - `-d` or `--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [Pexels](https://www.pexels.com/) to the folder already! 
     - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `--config_file_path` specifies the "File Path for Classifier Configuration". It defaults to "configs/classifier.json".
@@ -22,6 +23,7 @@
 - Add image data that you're interested in running multiple parallel classification models on to the `data` folder. 
 - You can specify multiple classifiers of interest with several filepaths that point to a json (e.g. `configs/classifier.json` & `configs/alt_classifier.json`). 
 - Arguments:
+    - `-h` or `--host` specifies "DirectAI Host". It defaults to "https://api.alpha.directai.io". This may be useful if you're self-hosting a DirectAI container.
     - `-d` or `--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [Pexels](https://www.pexels.com/) to the folder already! 
     - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `multi_classification_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `--config_file_paths` specifies the "File Path(s) for Classifier Configuration". It defaults to [`configs/classifier.json`, `configs/alt_classifier.json`].
@@ -32,6 +34,7 @@
 - Add image data that you're interested in running a detection model on to the `data` folder. 
 - You can specify objects of interest via the command line (e.g. `-c dog -c cat`) or with a filepath that points to a json (e.g. `configs/detector.json`). 
 - Arguments:
+    - `-h` or `--host` specifies "DirectAI Host". It defaults to "https://api.alpha.directai.io". This may be useful if you're self-hosting a DirectAI container.
     - `-d` or `--data_dir` specifies the "Directory for Input Data". It defaults to "data". We accept `.png` and `.jpg` image formats. We've added a few samples from [Pexels](https://www.pexels.com/) to the folder already! 
     - `-r` or `--results_dir` specifies the "Directory for Results". It defaults to "results". We write `detection_results.json` to this directory. It specifies classification scores and ultimate class prediction for each input image.
     - `-f` or `--config_file_path` specifies the "File Path for Classifier Configuration". It defaults to "configs/classifier.json".
