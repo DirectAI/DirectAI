@@ -19,18 +19,18 @@ from utils import (
 load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 DEFAULT_OBJECT_DETECTION_THRESHOLD = 0.1
 DEFAULT_NMS_THRESHOLD = 0.4
 
 
 @click.command()
+@click.option('-h', '--host', default='https://api.alpha.directai.io', help='DirectAI Host')
 @click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
 @click.option('-f', '--config-file-path', default='configs/detector.json', help='File Path for Classifier Configuration')
 @click.option('-b', '--bounding-box-drawing', is_flag=True, default=False, help='Flag to draw bounding boxes on images')
 @click.option('-c', '--class-name', help='Class to Predict', multiple=True)
-def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_name):
+def main(host, data_dir, results_dir, config_file_path, bounding_box_drawing, class_name):
     if len(class_name) > 0:
         detector_configs = []
         for single_class in class_name:
@@ -52,7 +52,7 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
     access_token = get_directai_access_token(
         client_id=DIRECTAI_CLIENT_ID,
         client_secret=DIRECTAI_CLIENT_SECRET,
-        auth_endpoint=DIRECTAI_BASE_URL+"/token"
+        auth_endpoint=host+"/token"
     )
     
     headers = {
@@ -61,7 +61,7 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
     
     # Deploy Detector
     deploy_response = requests.post(
-        f"{DIRECTAI_BASE_URL}/deploy_detector",
+        f"{host}/deploy_detector",
         headers=headers,
         json=body
     )
@@ -85,7 +85,7 @@ def main(data_dir, results_dir, config_file_path, bounding_box_drawing, class_na
         }
         file_data = get_file_data(f"{data_dir}/{filename}")
         detect_response = requests.post(
-            f"{DIRECTAI_BASE_URL}/detect",
+            f"{host}/detect",
             headers=headers, 
             params=params,
             files=file_data

@@ -17,19 +17,19 @@ from classification_on_collection import get_classifier_body, deploy_classifier,
 load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
 
 @click.command()
+@click.option('-h', '--host', default='https://api.alpha.directai.io', help='DirectAI Host')
 @click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
 @click.option('-f', '--config-file-paths', default=['configs/classifier.json', 'configs/alt_classifier.json'], help='File Path(s) for Classifier Configuration', multiple=True)
-def main(data_dir, results_dir, config_file_paths):
+def main(host, data_dir, results_dir, config_file_paths):
     # Get Access Token
     access_token = get_directai_access_token(
         client_id=DIRECTAI_CLIENT_ID,
         client_secret=DIRECTAI_CLIENT_SECRET,
-        auth_endpoint=DIRECTAI_BASE_URL+"/token"
+        auth_endpoint=host+"/token"
     )
     
     deployed_classifier_ids = []
@@ -40,7 +40,7 @@ def main(data_dir, results_dir, config_file_paths):
         for config_file_path in config_file_paths:
             # Model Deployment Prep
             classifier_body = get_classifier_body(config_file_path)
-            deployed_classifier_id = deploy_classifier(classifier_body, access_token)
+            deployed_classifier_id = deploy_classifier(host, classifier_body, access_token)
             deployed_classifier_ids.append(deployed_classifier_id)
             # Results Directory Prep
             stripped_config_name = config_file_path.split("/")[-1].split(".")[0]
@@ -67,7 +67,7 @@ def main(data_dir, results_dir, config_file_paths):
         }
         file_data = get_file_data(f"{data_dir}/{filename}")
         classify_response = requests.post(
-            f"{DIRECTAI_BASE_URL}/multi_classify",
+            f"{host}/multi_classify",
             headers=headers, 
             params=params,
             files=file_data

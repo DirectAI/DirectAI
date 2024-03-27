@@ -16,7 +16,6 @@ from utils import get_directai_access_token, get_file_data
 load_dotenv()
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
 
 def get_classifier_body(config_file_path, class_name=None):
     if (class_name is not None) and len(class_name) > 0:
@@ -34,14 +33,14 @@ def get_classifier_body(config_file_path, class_name=None):
     
     return body
 
-def deploy_classifier(body, access_token):
+def deploy_classifier(host, body, access_token):
     headers = {
         'Authorization': f"Bearer {access_token}"
     }
     
     # Deploy Classifier
     deploy_response = requests.post(
-        f"{DIRECTAI_BASE_URL}/deploy_classifier",
+        f"{host}/deploy_classifier",
         headers=headers,
         json=body
     )
@@ -63,20 +62,21 @@ def prep_classification_results_dir(body, results_dir):
         os.makedirs(class_dir)
 
 @click.command()
+@click.option('-h', '--host', default='https://api.alpha.directai.io', help='DirectAI Host')
 @click.option('-d', '--data-dir', default='data', help='Directory for Input Data')
 @click.option('-r', '--results-dir', default='results', help='Directory for Results')
 @click.option('-f', '--config-file-path', default='configs/classifier.json', help='File Path for Classifier Configuration')
 @click.option('-c', '--class-name', help='Class to Predict', multiple=True)
-def main(data_dir, results_dir, config_file_path, class_name):
+def main(host, data_dir, results_dir, config_file_path, class_name):
     # Get Access Token
     access_token = get_directai_access_token(
         client_id=DIRECTAI_CLIENT_ID,
         client_secret=DIRECTAI_CLIENT_SECRET,
-        auth_endpoint=DIRECTAI_BASE_URL+"/token"
+        auth_endpoint=host+"/token"
     )
     
     classifier_body = get_classifier_body(config_file_path, class_name)
-    deployed_classifier_id = deploy_classifier(classifier_body, access_token)
+    deployed_classifier_id = deploy_classifier(host, classifier_body, access_token)
     prep_classification_results_dir(classifier_body, results_dir)
     # Compiled Results
     results = {}
@@ -94,7 +94,7 @@ def main(data_dir, results_dir, config_file_path, class_name):
         }
         file_data = get_file_data(f"{data_dir}/{filename}")
         classify_response = requests.post(
-            f"{DIRECTAI_BASE_URL}/classify",
+            f"{host}/classify",
             headers=headers, 
             params=params,
             files=file_data
