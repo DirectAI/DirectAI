@@ -29,7 +29,7 @@ DETECTOR_CONFIGS = [
 
 TRACKER_CONFIG = {
     "rebroadcast_format": REBROADCAST_FORMAT,
-    "stream_url": "rtsp://100.66.146.61:8554/isaac_webcam", ## TO MODIFY ##
+    "stream_url": "RAW_STREAM_URL", ## TO MODIFY ##
     "webhook_url": "WEBHOOK_TO_SEND_DETECTION_RESULTS", ## TO MODIFY ##
     "tracker_config": {
         "rebroadcast_annotations": "True",
@@ -39,7 +39,7 @@ TRACKER_CONFIG = {
 
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE = "100.66.146.61"
+DIRECTAI_BASE = "api.alpha.directai.io"
 DIRECTAI_BASE_URL = f"http://{DIRECTAI_BASE}:8000"
 if REBROADCAST_FORMAT == "rtsp":
     DIRECTAI_STREAM_URL = f"rtsp://{DIRECTAI_BASE}:8554"
