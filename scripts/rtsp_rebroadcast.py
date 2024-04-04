@@ -10,6 +10,9 @@ from utils import get_directai_access_token
 ## TO MODIFY ##
 # NOTE: for the object tracker, as opposed to the object detector, objects are not mutually exclusive
 # which means if we want the same object to not be detected twice, we need to set up the exclusions
+
+REBROADCAST_FORMAT = "webrtc"
+
 DETECTOR_CONFIGS = [
     {
         "name": "cell phone",
@@ -25,7 +28,8 @@ DETECTOR_CONFIGS = [
 ]
 
 TRACKER_CONFIG = {
-    "stream_url": "YOUR_RTSP_URL", ## TO MODIFY ##
+    "rebroadcast_format": REBROADCAST_FORMAT,
+    "stream_url": "rtsp://100.66.146.61:8554/isaac_webcam", ## TO MODIFY ##
     "webhook_url": "WEBHOOK_TO_SEND_DETECTION_RESULTS", ## TO MODIFY ##
     "tracker_config": {
         "rebroadcast_annotations": "True",
@@ -35,8 +39,12 @@ TRACKER_CONFIG = {
 
 DIRECTAI_CLIENT_ID = os.getenv("DIRECTAI_CLIENT_ID")
 DIRECTAI_CLIENT_SECRET = os.getenv("DIRECTAI_CLIENT_SECRET")
-DIRECTAI_BASE_URL = "https://api.alpha.directai.io"
-DIRECTAI_STREAM_URL = "rtsp://watch.directai.io"
+DIRECTAI_BASE = "100.66.146.61"
+DIRECTAI_BASE_URL = f"http://{DIRECTAI_BASE}:8000"
+if REBROADCAST_FORMAT == "rtsp":
+    DIRECTAI_STREAM_URL = f"rtsp://{DIRECTAI_BASE}:8554"
+else:
+    DIRECTAI_STREAM_URL = f"{DIRECTAI_BASE}:8889"
 
 HLS_OUTPUT_DIR = None ## TO MODIFY ##
 
@@ -91,7 +99,7 @@ if __name__ == '__main__':
     access_token = get_directai_access_token(DIRECTAI_CLIENT_ID, DIRECTAI_CLIENT_SECRET)
     tracker_instance_id = start_rtsp_inference(access_token)
     
-    if HLS_OUTPUT_DIR is not None:
+    if HLS_OUTPUT_DIR is not None and REBROADCAST_FORMAT == "rtsp":
         # wait for the stream to start
         print("Waiting 10 seconds for stream to start so we can record it...")
         time.sleep(10)
