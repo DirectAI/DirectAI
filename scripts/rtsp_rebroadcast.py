@@ -31,6 +31,7 @@ TRACKER_CONFIG = {
     "rebroadcast_format": REBROADCAST_FORMAT,
     "stream_url": "RAW_STREAM_URL", ## TO MODIFY ##
     "webhook_url": "WEBHOOK_TO_SEND_DETECTION_RESULTS", ## TO MODIFY ##
+    "rebroadcast_to": "http://YOUR_HOST:8889/your_stream_name/whip", # Remove this key-value pair if you want DirectAI to host the stream #
     "tracker_config": {
         "rebroadcast_annotations": "True",
         "detectors": DETECTOR_CONFIGS
@@ -60,7 +61,11 @@ def start_rtsp_inference(access_token):
     )
     response_json = response.json()
     tracker_instance_id = response_json["tracker_instance_id"]
-    print(f"View stream here: {DIRECTAI_STREAM_URL}/{tracker_instance_id}")
+    if "rebroadcast_to" not in TRACKER_CONFIG:
+        print(f"View stream here: {DIRECTAI_STREAM_URL}/{tracker_instance_id}")
+    else:
+        chosen_endpoint = TRACKER_CONFIG["rebroadcast_to"]
+        print(f"Stream is now broadcasting to your chosen endpoint: {chosen_endpoint}")
     return tracker_instance_id
 
 def stop_rtsp_inference(access_token, tracker_instance_id):
